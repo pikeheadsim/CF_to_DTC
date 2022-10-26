@@ -1,4 +1,4 @@
-# CombatFlit to Data Transfer Cartridge
+# CombatFlite to Data Transfer Cartridge
 Simple program to upload waypoints in DCS from CombatFlite XML exported files
 
 Simplified version of:  [https://github.com/the-paid-actor/dcs-dtc]
