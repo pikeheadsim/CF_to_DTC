@@ -37,38 +37,39 @@ class base:
     string_variable=""
     save_dtc_files=True
     old_str=""
+
+    precise=True
+    SaveFiles=True
+
+    def update_status(self):
+    # ************* Reset values and paths to start again ************* 
+        if self.input_filename == "":
+            return False
+        
+        self.flights_dic={}
+        self.flights_calls=[]
+
+        # ************* set values paths and lists ************* 
+        self.number_flights = len(self.input_file.findall("Waypoints"))
+        self.string_variable.set(self.input_filename)
+        self.path_run=os.path.dirname(self.input_filename)
+        self.base_filename=os.path.basename(self.input_filename).split('.', 1)[0]
+        self.convert()
+
     
     def select_file(self):
         filetypes = (('CombatFlite (xml)', '*.xml'),('All files', '*.*'))
+        old=self.input_filename
         self.input_filename = fd.askopenfilename(title='Open a file',initialdir=self.path_run, filetypes=filetypes)
-       # if self.input_filename == "":
-       #     return False
+        if self.input_filename == "":
+            self.input_filename = old
+            return False
         
         self.input_file = ET.parse(self.input_filename)
-        
-        # ************* Reset all the values and paths to start again ************* 
-        #self.path_run = "" #running path
-        self.flights_dic={}
-        self.flights_calls=[]
-        self.input_filename=""
-        self.base_filename=""
-        self.number_flights=0
-
-        
-
-        self.number_flights = len(self.input_file.findall("Waypoints"))
-        self.string_variable.set(self.input_filename)
-        #self.T.configure(state='normal')
-        #self.T.delete('0.0', tk.END)
-        #self.T.insert(tk.END,str(self.number_flights)+" Flights found")
-        #self.T.configure(state='disabled')
-        self.path_run=os.path.dirname(self.input_filename)
-        print('input', self.path_run)
-        self.base_filename=os.path.basename(self.input_filename).split('.', 1)[0]
-        self.convert(self.save_dtc_files)
+        self.update_status()
         return True
     
-    def from_decimal_dms(self,val, precise=True):
+    def from_decimal_dms(self,val):
         ''' This funcitions transforms the decimal 
         value in degrees to (ex. N 34.54.3456) it can 
         be used with precision or standard (ex.34.54.34) '''
@@ -76,7 +77,7 @@ class base:
         dec = abs(float(val))
         deg = int(dec)
         minutes = int((dec - deg)*60)
-        if precise:
+        if self.precise:
             sec = round((dec - deg - minutes/60.0)*360000)
             output = str(deg).zfill(2) + "." + str(minutes).zfill(2)+"."+str(sec).zfill(4)
         else:
@@ -101,7 +102,7 @@ class base:
 
 
 
-    def convert(self,SaveFiles=True):
+    def convert(self):
         ''' Converts every flight in a dicctionary of waypoints that can be 
         send to a json files compatible with DCS-DTC or save it for later upload 
         the info in the plane. T is the tkinter text box.'''
@@ -116,7 +117,7 @@ class base:
             for idx,w in enumerate(flight):#loop on waypoints
                 flight_name, wp_info = self.wp_to_DCTwp(w,idx+1)
                 wplist.append(wp_info)
-            if SaveFiles:
+            if self.SaveFiles:
                 with open(self.path_run + "\\"+self.base_filename+"_"+flight_name+'_DTC.json', 'w') as f:
                     json.dump({"Waypoints":{"Waypoints":wplist,"SteerpointStart":0,"EnableUpload":True},"Sequences":None,"PrePlanned":None,"Radios":None,"CMS":None,"Misc":None}, f)
                     

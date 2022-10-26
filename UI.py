@@ -48,7 +48,7 @@ root.grid_rowconfigure(0, minsize=10)
 root.grid_columnconfigure(0, minsize=10)
 
 # first label
-Label(root,text="CombatFlite file exported in .xml file:",
+Label(root,text="CombatFlite file exported in .xml:",
       bg=col2,font=('Monospace', 13)).grid(row=1,column=1,
                                               columnspan=4, rowspan=1)
 
@@ -71,8 +71,8 @@ flightsmenu.grid(row=4,column=1,rowspan=1, columnspan=3, sticky="nw")
 
 
 def call_and_update():
-    file_loaded = bs.select_file()
-    if not file_loaded:
+#    file_loaded = 
+    if not bs.select_file():
         return
     aux=flightsmenu["menu"]
     aux.delete(0,"end")
@@ -97,7 +97,7 @@ S.grid(row=3,column=11,rowspan=10,ipady=75, sticky="ne")
 S.config(command=T.yview)
 T.configure(height=11, width=50, bg=col1,font=('Monospace', 12))
 T.grid(row=3,column=4,rowspan=16, columnspan=6, sticky="ne")
-
+root.grid_columnconfigure(12, minsize=15)
 
 #flights menu to be updated
 variable_plane = StringVar(root)
@@ -123,6 +123,48 @@ upload_button = Button(text="Upload!",font=('Monospace', 12),image=image,bg="bla
                        command=upload, width=120,height=120)
 
 upload_button.grid(row=6,column=1,columnspan=2,sticky="nw")
+
+root.grid_rowconfigure(6, minsize=140)
+
+
+c_v1=IntVar()
+c_v2=IntVar()
+c_v1.set(0)
+c_v2.set(1)
+
+bs.SaveFiles=bool(c_v1.get())
+bs.precise=bool(c_v2.get())
+
+def checkbox_com():
+    bs.SaveFiles=bool(c_v1.get())
+    bs.update_status()
+    print(bs.SaveFiles)
+    
+checkbox = Checkbutton(root, text="Save DTC (json)", command=checkbox_com, variable=c_v1)
+checkbox.config(bg=col2,font=('Monospace', 12))
+checkbox.grid(row=6,column=4,columnspan=2, rowspan=1, sticky="se")
+
+
+def checkbox2_com():
+    bs.precise=bool(c_v2.get())
+    bs.update_status()
+    print(bs.precise)
+
+
+
+checkbox2 = Checkbutton(root, text="Precise Coord",command=checkbox2_com, variable=c_v2)
+checkbox2.config(bg=col2,font=('Monospace', 12))
+checkbox2.grid(row=6,column=6,columnspan=2, rowspan=1, sticky="se")
+
+showwp_button = Button(text="Show Selected WP",font=('Monospace', 10),bg=col4, fg=col1,activebackground=col4,
+                     command=call_and_update, width=15,height=1)
+showwp_button.grid(row=6,column=8,columnspan=4,sticky="se")
+root.grid_rowconfigure(7, minsize=10)
+
+#Label(root,text="Save DTC json ",
+#      bg=col2,font=('Monospace', 13)).grid(row=6,column=4,
+#                                              columnspan=2, rowspan=1, sticky="se")
+
 
 #w.configure(text="Load File",font=('Monospace', 12),bg=col3,
  #                    command=bs.select_file, width=10,height=1)
