@@ -30,7 +30,6 @@ class base:
     base_filename=""  #filename without extension.
     number_flights=0  #total number of flights in the combatflite file. 
 
-    selected_flight=""
 
     T=""
     plane=""
@@ -126,11 +125,11 @@ class base:
             self.flights_calls.append(flight_name)
 
         self.T.configure(state='normal')
-        self.T.delete('0.0', tk.END)
+        #self.T.delete('0.0', tk.END)
         text = str(self.number_flights)+" Flights found" + heather + "\n"+"  Callsign" + (len(heather)-10)*" "+"Num Wps\n  "
         text += (len(heather)+5)*"-"
         text += string_flights + "\n" + len(heather)*"*" + "\n\n"
-        self.T.insert(tk.END,text+self.old_str)
+        self.T.insert("1.0",text+self.old_str)
         self.old_str= text + self.old_str
         self.T.configure(state='disabled')
 

@@ -95,7 +95,7 @@ load_button.grid(row=3,column=1,columnspan=1,sticky="nw")
 S = Scrollbar(root,orient=VERTICAL,command=T.yview)
 S.grid(row=3,column=11,rowspan=10,ipady=75, sticky="ne")
 S.config(command=T.yview)
-T.configure(height=11, width=50, bg=col1,font=('Monospace', 12))
+T.configure(height=11, width=60, bg=col1,font=('Monospace', 12))
 T.grid(row=3,column=4,rowspan=16, columnspan=6, sticky="ne")
 root.grid_columnconfigure(12, minsize=15)
 
@@ -115,7 +115,7 @@ def upload():
         T.configure(state='normal')
         #T.delete('0.0', tk.END)
         #print(e)
-        T.insert(END,str(e))
+        T.insert("1.0",str(e)+"\n")
         T.configure(state='disabled')        
     
 image = PhotoImage(file = resource_path("upload.png"))
@@ -156,55 +156,34 @@ checkbox2 = Checkbutton(root, text="Precise Coord",command=checkbox2_com, variab
 checkbox2.config(bg=col2,font=('Monospace', 12))
 checkbox2.grid(row=6,column=6,columnspan=2, rowspan=1, sticky="se")
 
+
+def show_wp():
+
+#        self.flights_dic={}
+#        self.flights_calls=[]
+
+    T.configure(state='normal')
+
+
+    T.insert("1.0","\n\n")
+    #print(wpl)
+    for i,fl in reversed(list(enumerate(bs.flights_dic[variable.get()]))):
+        line = str(i)+ " -  " + fl["Name"] + " - "
+        line += fl["Latitude"] + " -  "
+        line += fl["Longitude"] + " -  "
+        line += str(fl["Elevation"])
+        print(line)
+        T.insert("1.0",line+"\n")
+    T.insert("1.0","# "+variable.get() + " ---  Num  -  Name  -  Lat  -  Lon  -  Elev  --------------\n")    
+    T.configure(state='disabled')        
+    
+
+
+
 showwp_button = Button(text="Show Selected WP",font=('Monospace', 10),bg=col4, fg=col1,activebackground=col4,
-                     command=call_and_update, width=15,height=1)
+                     command=show_wp, width=15,height=1)
 showwp_button.grid(row=6,column=8,columnspan=4,sticky="se")
 root.grid_rowconfigure(7, minsize=10)
-
-#Label(root,text="Save DTC json ",
-#      bg=col2,font=('Monospace', 13)).grid(row=6,column=4,
-#                                              columnspan=2, rowspan=1, sticky="se")
-
-
-#w.configure(text="Load File",font=('Monospace', 12),bg=col3,
- #                    command=bs.select_file, width=10,height=1)
-
-#second label
-# Label(root,text="Flights:",
-#       bg=col2,font=('Monospace', 13)).grid(row=4,column=1,
-#                                               columnspan=1, rowspan=1, sticky="nw")
-# listbox = Listbox(root, width=40, height=10, selectmode=MULTIPLE)
-# listbox.grid(row=5,column=1,columnspan=1, rowspan=1, sticky="nw")
-
-# root.grid_rowconfigure(1, minsize=85)
-# entry=Entry(root, textvariable=string_variable, width=80)
-# entry.configure(state='disabled')
-# entry.grid(row=2,column=1,columnspan=5,sticky="n")
-
-# S = Scrollbar(root,orient=VERTICAL,command=T.yview)
-# S.grid(row=3,column=5,rowspan=1,ipady=40, sticky="ne")
-# S.config(command=T.yview)
-# T.grid(row=3,column=4,rowspan=1)
-
-# image = tk.PhotoImage(file = resource_path("./ConvertButton.png"))
-# button = Button(root, text="Select XML file", bg="#b9ab81", command=bs.select_file, image=image2, width=70,height=70)
-# button.grid(row=1,column=1,sticky="n")
-
-# image2 = tk.PhotoImage(file = resource_path("./XMLButton.png"))
-# button2 = Button(text="Convert",font=('Arial', 20),bg="#b9ab81", command=bs.convert, image=image, width=120,height=120)
-# button2.grid(row=3,column=1, columnspan=2,sticky="n")
-
-#
-
-#button3 = Button(text="push",font=('Arial', 20),bg="#b9ab81", command=test)
-#button3.grid(row=4,column=1, columnspan=2,sticky="n")
-
-#root.geometry("650x300")
-
-#title_bar = Frame(root, bg="#b9ab81", relief='raised', bd=2)
-
-#Label(root,text="Ouput files are saved in input-file folder", bg=bgcolor,font=('Arial', 10)).grid(row=4,column=3,columnspan=4, rowspan=1)
-
 
 
 root.mainloop()  
