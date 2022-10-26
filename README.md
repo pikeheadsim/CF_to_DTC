@@ -26,7 +26,7 @@ For now only the FA-18, next F-16C and next, I guess A10II
 
 # CombatFlit al cartucho de transferencia de datos
 Sencillo programa para cargar waypoints en DCS desde archivos XML exportados con CombatFlite.
-Versión simplificada de: https://github.com/the-paid-actor/dcs-dtc
+Versión simplificada de: [https://github.com/the-paid-actor/dcs-dtc]
 
 ## Instalación
 El programa usa la misma interfaz que dcs-dtc, si ya lo tienes instalado puede ignorar el punto 1.
@@ -40,10 +40,10 @@ local DCSDTClfs=require('lfs'); dofile(DCSDTClfs.writedir()..'Scripts/DCSDTC.lua
 
 ## Características
 
-*. Permite abrir el archivo CombatFlite, el número de vuelos y los callsigns de los vuelos se muestran en la pantalla.
-*. Puede generar archivos Json que se pueden cargar en DCS-DTC en caso de que desee utilizar las funciones adicionales allí.
-*. Puede elegir el avión y hacer clic en cargar, si todo está bien, los wayponts se van metiendo(no le des a ninguna tecla durante el proceso).
-*. Se pueden introducir las coordenadas de precisión.
+* Permite abrir el archivo CombatFlite, el número de vuelos y los callsigns de los vuelos se muestran en la pantalla.
+* Puede generar archivos Json que se pueden cargar en DCS-DTC en caso de que desee utilizar las funciones adicionales allí.
+* Puede elegir el avión y hacer clic en cargar, si todo está bien, los wayponts se van metiendo(no le des a ninguna tecla durante el proceso).
+* Se pueden introducir las coordenadas de precisión.
 
 ## Limitaciones
 
