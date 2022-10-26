@@ -46,6 +46,8 @@ bs.string_variable = string_variable
       
 root.grid_rowconfigure(0, minsize=10)
 root.grid_columnconfigure(0, minsize=10)
+root.grid_columnconfigure(1, minsize=150)
+
 
 # first label
 Label(root,text="CombatFlite file exported in .xml:",
@@ -56,7 +58,7 @@ root.grid_rowconfigure(1, minsize=10)
 #root.grid_columnconfigure(1, minsize=10)
 
 #text for the path
-entry=Entry(root, textvariable=string_variable, width=88,font=('Monospace 10'),fg = "black")
+entry=Entry(root, textvariable=string_variable, width=90,font=('Monospace 11'),fg = "black")
 entry.configure(state='disabled')
 entry.grid(row=2,column=1,columnspan=11)
 
@@ -69,9 +71,15 @@ flightsmenu = OptionMenu(root, variable, "No Flights")
 flightsmenu.config(width=9,height=1, bg=col3,activebackground=col4,font=('Monospace', 12))
 flightsmenu.grid(row=4,column=1,rowspan=1, columnspan=3, sticky="nw")
 
-
+def menucom(value ):
+    variable.set(value)
+    T.configure(state='normal')
+    T.insert("1.0", "   .... Fligth "+value+" loaded .... \n\n")
+    T.configure(state='disabled')        
+    
+    
 def call_and_update():
-#    file_loaded = 
+#    file_loaded =
     if not bs.select_file():
         return
     aux=flightsmenu["menu"]
@@ -82,7 +90,7 @@ def call_and_update():
         variable.set("No Flights")
     for string in bs.flights_calls:
             aux.add_command(label=string, 
-                             command=lambda value=string: variable.set(value))
+                             command=lambda value=string: menucom(value))
     
 
 #load button to select the xml file
@@ -94,6 +102,7 @@ load_button.grid(row=3,column=1,columnspan=1,sticky="nw")
 #set textbox
 S = Scrollbar(root,orient=VERTICAL,command=T.yview)
 S.grid(row=3,column=11,rowspan=10,ipady=75, sticky="ne")
+root.grid_columnconfigure(11, minsize=20)
 S.config(command=T.yview)
 T.configure(height=11, width=60, bg=col1,font=('Monospace', 12))
 T.grid(row=3,column=4,rowspan=16, columnspan=6, sticky="ne")
