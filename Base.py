@@ -68,7 +68,7 @@ class base:
         self.update_status()
         return True
     
-    def from_decimal_dms(self,val):
+    def from_decimal_dms(self,val, ck=True):
         ''' This funcitions transforms the decimal 
         value in degrees to (ex. N 34.54.3456) it can 
         be used with precision or standard (ex.34.54.34) '''
@@ -76,7 +76,7 @@ class base:
         dec = abs(float(val))
         deg = int(dec)
         minutes = int((dec - deg)*60)
-        if self.precise:
+        if self.precise and ck:
             sec = round((dec - deg - minutes/60.0)*360000)
             output = str(deg).zfill(2) + "." + str(minutes).zfill(2)+"."+str(sec).zfill(4)
         else:
@@ -84,7 +84,7 @@ class base:
             output = str(deg).zfill(2) + "." + str(minutes).zfill(2)+"."+str(sec).zfill(2)
         return output
     
-    def wp_to_DCTwp(self,w, idx):
+    def wp_to_DCTwp(self,w, idx, ck=True):
         '''Funciont that takes the info from the xml structure of the waypoint.'''
         flight_name = w.find("Name").text.split("\n")[0]
         wp_name    = w.find("Name").text.split("\n")[1]
@@ -97,7 +97,7 @@ class base:
         else:
             long_dir="E "
     
-        return flight_name,{'Sequence': idx, 'Name': wp_name, 'Latitude': "N "+ self.from_decimal_dms(Lat), 'Longitude': long_dir + self.from_decimal_dms(Lon), 'Elevation': int(float(Ele)), 'Blank': False}
+        return flight_name,{'Sequence': idx, 'Name': wp_name, 'Latitude': "N "+ self.from_decimal_dms(Lat,ck), 'Longitude': long_dir + self.from_decimal_dms(Lon,ck), 'Elevation': int(float(Ele)), 'Blank': False}
 
 
 
@@ -113,12 +113,15 @@ class base:
         print(self.path_run)
         for flight in flights: #loop on flights
             wplist=[]
+            wplist_file=[]
             for idx,w in enumerate(flight):#loop on waypoints
                 flight_name, wp_info = self.wp_to_DCTwp(w,idx+1)
                 wplist.append(wp_info)
+                _, wp_info = self.wp_to_DCTwp(w,idx+1,False)
+                wplist_file.append(wp_info)
             if self.SaveFiles:
                 with open(self.path_run + "\\"+self.base_filename+"_"+flight_name+'_DTC.json', 'w') as f:
-                    json.dump({"Waypoints":{"Waypoints":wplist,"SteerpointStart":0,"EnableUpload":True},"Sequences":None,"PrePlanned":None,"Radios":None,"CMS":None,"Misc":None}, f)
+                    json.dump({"Waypoints":{"Waypoints":wplist_file,"SteerpointStart":0,"EnableUpload":True},"Sequences":None,"PrePlanned":None,"Radios":None,"CMS":None,"Misc":None}, f)
                     
             string_flights +=  "\n     " +flight_name + ((len(heather)-10)//3)*" - " + str(len(wplist))
             self.flights_dic[flight_name]=wplist

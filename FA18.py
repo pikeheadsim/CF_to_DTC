@@ -7,9 +7,9 @@ class FA18:
     
     wait = "{'device':'wait', 'delay': 200},"
     waitlong = "{'device':'wait', 'delay': 600},"
-
     waitverylong = "{'device':'wait', 'delay': 17000},"
 
+    precise=True
     
     delay = 2000#Settings.CommandDelayMs;
     delayMFDs = delay;
@@ -125,17 +125,15 @@ class FA18:
         return "{'device': '" + str(Dev[D]) + "', 'code': '" + str(Com[C][0])     + "', 'delay': '" + str(int(Com[C][2])) + "', 'activate': '" + str(Com[C][3]) + "'},";
 
     def StartCommand(self):
-        output=""
-        i=0
-        while i < 2:
-            output += "{'start_condition': 'NOT_AT_WP_0'}," + self.GetCommand("RMFD","OSB-13") + "{'end_condition': 'NOT_AT_WP_0'},";
-            i=i+1 
+        output = "{'start_condition': 'NOT_AT_WP_0'}," + self.GetCommand("RMFD","OSB-13") + "{'end_condition': 'NOT_AT_WP_0'},";
+        output = output*100 
         return output
     
     def buildDigits(self,coord):
         out=""
         co=coord.replace(" ","").replace(".","")
-        for c in co:
+
+        for i,c in enumerate(co):
             if c == "N":
                 out += self.GetCommand("UFC","2")
             elif c == 'S':
@@ -145,6 +143,8 @@ class FA18:
             elif c == 'W':
                 out += self.GetCommand("UFC","4")
             else:
+                if len(co)-i == 4:
+                    out += self.GetCommand("UFC","ENT")
                 out += self.GetCommand("UFC",c)
         return out
 
@@ -163,8 +163,8 @@ class FA18:
         for i in range(self.WPstart):
             ComLine += self.GetCommand("RMFD","OSB-12") # set the initial WP
 
-            ##conditio for precision coords needs to be set.
-        ComLine += self.GetCommand("RMFD","OSB-19")
+        if self.precise:
+            ComLine += self.GetCommand("RMFD","OSB-19") # set precision coords
         ComLine += self.GetCommand("UFC","ENT")
         for w in WayPoints:
             ComLine += self.GetCommand("UFC","Opt1")

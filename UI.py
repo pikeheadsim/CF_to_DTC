@@ -147,7 +147,7 @@ bs.precise=bool(c_v2.get())
 def checkbox_com():
     bs.SaveFiles=bool(c_v1.get())
     bs.update_status()
-    print(bs.SaveFiles)
+    #print(bs.SaveFiles)
     
 checkbox = Checkbutton(root, text="Save DTC (json)", command=checkbox_com, variable=c_v1)
 checkbox.config(bg=col2,font=('Monospace', 12))
@@ -157,7 +157,7 @@ checkbox.grid(row=6,column=4,columnspan=2, rowspan=1, sticky="se")
 def checkbox2_com():
     bs.precise=bool(c_v2.get())
     bs.update_status()
-    print(bs.precise)
+    #print(bs.precise)
 
 
 
@@ -177,20 +177,20 @@ def show_wp():
     T.insert("1.0","\n\n")
     #print(wpl)
     for i,fl in reversed(list(enumerate(bs.flights_dic[variable.get()]))):
-        line = str(i)+ " -  " + fl["Name"] + " - "
-        line += fl["Latitude"] + " -  "
-        line += fl["Longitude"] + " -  "
+        line = str(i)+ " --  " + fl["Name"] + " -- "
+        line += fl["Latitude"] + "  --  "
+        line += fl["Longitude"] + "  --  "
         line += str(fl["Elevation"])
-        print(line)
+        #print(line)
         T.insert("1.0",line+"\n")
-    T.insert("1.0","# "+variable.get() + " ---  Num  -  Name  -  Lat  -  Lon  -  Elev  --------------\n")    
+    T.insert("1.0","# "+variable.get() + "\n - Num  --  Name  --  Lat  --  Lon  --  Elev  ----------------\n")    
     T.configure(state='disabled')        
     
 
 
 
-showwp_button = Button(text="Show Selected WP",font=('Monospace', 10),bg=col4, fg=col1,activebackground=col4,
-                     command=show_wp, width=15,height=1)
+showwp_button = Button(text="Show Selected Flight",font=('Monospace', 11),bg=col4, fg=col1,activebackground=col4,
+                     command=show_wp, width=17,height=1)
 showwp_button.grid(row=6,column=8,columnspan=4,sticky="se")
 root.grid_rowconfigure(7, minsize=10)
 
