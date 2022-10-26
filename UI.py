@@ -142,7 +142,7 @@ c_v1.set(0)
 c_v2.set(1)
 
 bs.SaveFiles=bool(c_v1.get())
-bs.precise=bool(c_v2.get())
+bs.sprecise=bool(c_v2.get())
 
 def checkbox_com():
     bs.SaveFiles=bool(c_v1.get())
@@ -155,9 +155,9 @@ checkbox.grid(row=6,column=4,columnspan=2, rowspan=1, sticky="se")
 
 
 def checkbox2_com():
-    bs.precise=bool(c_v2.get())
+    bs.sprecise=bool(c_v2.get())
     bs.update_status()
-    #print(bs.precise)
+    print(bs.precise)
 
 
 

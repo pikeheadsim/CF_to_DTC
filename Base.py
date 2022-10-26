@@ -35,12 +35,17 @@ class base:
     plane=""
     string_variable=""
     save_dtc_files=True
-    old_str=""
-
+    
     precise=True
+    
+    @attribute.setter
+    def sprecise(self, value):
+        precise=value
+        FA18.precise=precise
+
     SaveFiles=True
 
-    def update_status(self):
+    def update_status(self, prst=False):
     # ************* Reset values and paths to start again ************* 
         if self.input_filename == "":
             return False
@@ -53,7 +58,7 @@ class base:
         self.string_variable.set(self.input_filename)
         self.path_run=os.path.dirname(self.input_filename)
         self.base_filename=os.path.basename(self.input_filename).split('.', 1)[0]
-        self.convert()
+        self.convert(prst)
 
     
     def select_file(self):
@@ -65,7 +70,7 @@ class base:
             return False
         
         self.input_file = ET.parse(self.input_filename)
-        self.update_status()
+        self.update_status(True)
         return True
     
     def from_decimal_dms(self,val, ck=True):
@@ -101,7 +106,7 @@ class base:
 
 
 
-    def convert(self):
+    def convert(self,prstatus=True):
         ''' Converts every flight in a dicctionary of waypoints that can be 
         send to a json files compatible with DCS-DTC or save it for later upload 
         the info in the plane. T is the tkinter text box.'''
@@ -126,15 +131,14 @@ class base:
             string_flights +=  "\n     " +flight_name + ((len(heather)-10)//3)*" - " + str(len(wplist))
             self.flights_dic[flight_name]=wplist
             self.flights_calls.append(flight_name)
-
-        self.T.configure(state='normal')
-        #self.T.delete('0.0', tk.END)
-        text = str(self.number_flights)+" Flights found" + heather + "\n"+"  Callsign" + (len(heather)-10)*" "+"Num Wps\n  "
-        text += (len(heather)+5)*"-"
-        text += string_flights + "\n" + len(heather)*"*" + "\n\n"
-        self.T.insert("1.0",text+self.old_str)
-        self.old_str= text + self.old_str
-        self.T.configure(state='disabled')
+        if prstatus:
+            self.T.configure(state='normal')
+            #self.T.delete('0.0', tk.END)
+            text = str(self.number_flights)+" Flights found" + heather + "\n"+"  Callsign" + (len(heather)-10)*" "+"Num Wps\n  "
+            text += (len(heather)+5)*"-"
+            text += string_flights + "\n" + len(heather)*"*" + "\n\n"
+            self.T.insert("1.0",text)
+            self.T.configure(state='disabled')
 
     def create_clicks(self,flight_name):
         wplist=self.flights_dic[flight_name]

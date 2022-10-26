@@ -11,14 +11,14 @@ class FA18:
 
     precise=True
     
-    delay = 2000#Settings.CommandDelayMs;
-    delayMFDs = delay;
-    delayUFC = delay / 4;
-    delayUFCOpt = delay / 4;
-    delayUFCOnOff = delay;
-    delayUFCEnt = delay / 2;
-    delayIFEI = delay / 2;
-    delayRot = delay / 20;
+    delay = 200#Settings.CommandDelayMs;
+    delayMFDs = delay
+    delayUFC = delay / 4
+    delayUFCOpt = delay /4
+    delayUFCOnOff = delay 
+    delayUFCEnt = delay / 2
+    delayIFEI = delay / 2
+    delayRot = delay / 20
     WPstart=0
     
     Dev["UFC"]=25
@@ -156,21 +156,18 @@ class FA18:
         
         ComLine += self.GetCommand("RMFD","OSB-10") # DATA
         ComLine += self.GetCommand("RMFD","OSB-07") # WYPT
-        ComLine += self.GetCommand("RMFD","OSB-05") # UFC
-
         ComLine += self.StartCommand()
 
         for i in range(self.WPstart):
             ComLine += self.GetCommand("RMFD","OSB-12") # set the initial WP
-
         if self.precise:
             ComLine += self.GetCommand("RMFD","OSB-19") # set precision coords
-        ComLine += self.GetCommand("UFC","ENT")
+        ComLine += self.GetCommand("RMFD","OSB-05") # UFC
+        #ComLine += self.GetCommand("UFC","ENT")
         for w in WayPoints:
             ComLine += self.GetCommand("UFC","Opt1")
             ComLine += self.buildDigits(w['Latitude'])
             ComLine += self.GetCommand("UFC","ENT")
-            ComLine += self.waitlong
             ComLine += self.buildDigits(w['Longitude'])
             ComLine += self.GetCommand("UFC","ENT")
             ComLine += self.waitlong
