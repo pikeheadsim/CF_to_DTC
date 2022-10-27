@@ -8,21 +8,12 @@ import tkinter as tk
 from tkinter import filedialog as fd
 import FA18
 
-def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath("./")
- 
-    return os.path.join(base_path, relative_path)
 
-
+#base class, the one talking to DCS and loading the planes
 class base:
     
     #   *************  set default values for the class variables. *************
-    path_run = "~/Dropbox/varis/DCS-DTC-3.3.0-RC12/beta01_mods/Beta0.1/" #running path.
+    path_run = "./" #running path.
     flights_dic={}   #diccionary with the flights, keys are the callsigns.
     flights_calls=[""] #list of fight callsigns.
 
@@ -37,11 +28,17 @@ class base:
     save_dtc_files=True
     
     precise=True
+
+    FA18_inst = FA18.FA18()
     
-    @attribute.setter
+    @property
+    def sprecise(self):
+        return self.precise
+    
+    @sprecise.setter
     def sprecise(self, value):
-        precise=value
-        FA18.precise=precise
+        self.precise=value
+        self.FA18_inst.precise=self.precise
 
     SaveFiles=True
 
@@ -143,8 +140,7 @@ class base:
     def create_clicks(self,flight_name):
         wplist=self.flights_dic[flight_name]
         if self.plane == "FA18":
-            p=FA18.FA18()
-        return p.BuildWPCommands(wplist)
+            return self.FA18_inst.BuildWPCommands(wplist)
 
     def upload_plane(self, selected_flight):
         ''' '''

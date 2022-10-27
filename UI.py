@@ -9,6 +9,7 @@ col2 = "#c6bcb6"
 col3 = "#96897f"
 col4 = "#625750"
 
+
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     try:
@@ -22,28 +23,26 @@ def resource_path(relative_path):
 bs=Base.base()
 root = Tk()
 root.title("CombatFlite to DTC")
-bgcolor="#c6bcb6"
-#path_run = os.path.dirname(sys.executable)
-#path_run = os.path.dirname(__file__)
-#root.iconbitmap(resource_path('Icon.ico'))
 
-root.configure(bg=col2)
+
+path_run = os.path.dirname(sys.executable)
+bs.path_run = path_run
+#path_run = os.path.dirname(__file__)
+root.iconbitmap(resource_path('Icon.ico'))
+
+root.configure(bg=col3)
 string_variable = StringVar(master=root, value="...xml file not selected...")
 T = Text(root)
 bs.T = T
-T.insert(END, "No flights found")
+T.tag_config('good', foreground="darkblue")
+T.tag_config('good2', foreground="darkgreen")
+T.tag_config('bad', foreground="darkred")
+T.insert(END, "No flights yet...", "good2")
 T.configure(state='disabled',font=('Monospace', 12))
 
 bs.plane="FA18"
 bs.string_variable = string_variable
 
-#root.rowconfigure(9)
-#root.columnconfigure(15)
-
-#for i in range(8):
-#    root.grid_columnconfigure(i, minsize=30)
-#    root.grid_rowconfigure(i, minsize=40)
-      
 root.grid_rowconfigure(0, minsize=10)
 root.grid_columnconfigure(0, minsize=10)
 root.grid_columnconfigure(1, minsize=150)
@@ -51,11 +50,10 @@ root.grid_columnconfigure(1, minsize=150)
 
 # first label
 Label(root,text="CombatFlite file exported in .xml:",
-      bg=col2,font=('Monospace', 13)).grid(row=1,column=1,
+      bg=col3,font=('Monospace', 13)).grid(row=1,column=1,
                                               columnspan=4, rowspan=1)
 
 root.grid_rowconfigure(1, minsize=10)
-#root.grid_columnconfigure(1, minsize=10)
 
 #text for the path
 entry=Entry(root, textvariable=string_variable, width=90,font=('Monospace 11'),fg = "black")
@@ -74,7 +72,7 @@ flightsmenu.grid(row=4,column=1,rowspan=1, columnspan=3, sticky="nw")
 def menucom(value ):
     variable.set(value)
     T.configure(state='normal')
-    T.insert("1.0", "   .... Fligth "+value+" loaded .... \n\n")
+    T.insert("1.0", "   .... Fligth "+value+" loaded .... \n\n",  "good")
     T.configure(state='disabled')        
     
     
@@ -94,7 +92,6 @@ def call_and_update():
     
 
 #load button to select the xml file
-#image = PhotoImage(file = resource_path("./XMLButton.png"))
 load_button = Button(text="Load File",font=('Monospace', 12),bg=col4, fg=col1,activebackground=col4,
                      command=call_and_update, width=8,height=1)
 load_button.grid(row=3,column=1,columnspan=1,sticky="nw")
@@ -122,9 +119,7 @@ def upload():
         bs.upload_plane(variable.get())
     except Exception as e:
         T.configure(state='normal')
-        #T.delete('0.0', tk.END)
-        #print(e)
-        T.insert("1.0",str(e)+"\n")
+        T.insert("1.0",str(e)+"\n\n", "bad")
         T.configure(state='disabled')        
     
 image = PhotoImage(file = resource_path("upload.png"))
@@ -147,50 +142,42 @@ bs.sprecise=bool(c_v2.get())
 def checkbox_com():
     bs.SaveFiles=bool(c_v1.get())
     bs.update_status()
-    #print(bs.SaveFiles)
+
     
 checkbox = Checkbutton(root, text="Save DTC (json)", command=checkbox_com, variable=c_v1)
-checkbox.config(bg=col2,font=('Monospace', 12))
+checkbox.config(bg=col3,font=('Monospace', 12))
 checkbox.grid(row=6,column=4,columnspan=2, rowspan=1, sticky="se")
 
 
 def checkbox2_com():
     bs.sprecise=bool(c_v2.get())
     bs.update_status()
-    print(bs.precise)
-
 
 
 checkbox2 = Checkbutton(root, text="Precise Coord",command=checkbox2_com, variable=c_v2)
-checkbox2.config(bg=col2,font=('Monospace', 12))
+checkbox2.config(bg=col3,font=('Monospace', 12))
 checkbox2.grid(row=6,column=6,columnspan=2, rowspan=1, sticky="se")
 
 
 def show_wp():
-
-#        self.flights_dic={}
-#        self.flights_calls=[]
-
     T.configure(state='normal')
-
-
     T.insert("1.0","\n\n")
-    #print(wpl)
+
     for i,fl in reversed(list(enumerate(bs.flights_dic[variable.get()]))):
-        line = str(i)+ " --  " + fl["Name"] + " -- "
+        line =   " -- "
         line += fl["Latitude"] + "  --  "
         line += fl["Longitude"] + "  --  "
         line += str(fl["Elevation"])
-        #print(line)
-        T.insert("1.0",line+"\n")
-    T.insert("1.0","# "+variable.get() + "\n - Num  --  Name  --  Lat  --  Lon  --  Elev  ----------------\n")    
+
+        T.insert("1.0",line)
+        T.insert("1.0", "\n"+ str(i)+" --  " + fl["Name"] , "bad")
+    #T.insert("1.0", "# -- Num  --  Name  --  Lat  --  Lon  --  Elev  ---", "good")
+    T.insert("1.0","# Flight Name:  -- "+variable.get()+"\n","good2")
     T.configure(state='disabled')        
     
 
-
-
-showwp_button = Button(text="Show Selected Flight",font=('Monospace', 11),bg=col4, fg=col1,activebackground=col4,
-                     command=show_wp, width=17,height=1)
+showwp_button = Button(text="Show Selected Flight",font=('Monospace', 11),bg=col4, fg=col1,
+                       activebackground=col4,command=show_wp, width=17,height=1)
 showwp_button.grid(row=6,column=8,columnspan=4,sticky="se")
 root.grid_rowconfigure(7, minsize=10)
 
