@@ -9,7 +9,7 @@ class FA18:
 
     precise=True
     
-    delay = 150 
+    delay = 100 
     delayMFDs = delay
     delayUFC = delay / 4
     delayUFCOpt = delay /2

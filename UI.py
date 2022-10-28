@@ -3,6 +3,7 @@ import sys
 from tkinter import *
 import FA18
 import Base
+import ctypes as ct
 
 #The code is very simple and the user interface too
 
@@ -24,7 +25,15 @@ col4 = "#d0e1f9"
 col3 = "#4d648d"
 col2 = "#283655"
 
-
+#change the color of the top bar
+def dark_title_bar(window):
+    window.update()
+    set_window_attribute = ct.windll.dwmapi.DwmSetWindowAttribute
+    get_parent = ct.windll.user32.GetParent
+    hwnd = get_parent(window.winfo_id())
+    value = 2
+    value = ct.c_int(value)
+    set_window_attribute(hwnd, 20, ct.byref(value),4)
 
 #pyinstaller stuff for the path
 def resource_path(relative_path):
@@ -40,14 +49,13 @@ def resource_path(relative_path):
 bs=Base.base()                   #base class ( talks tod DCS, imports data, and exports data)
 root = Tk()                      #window
 root.title("CombatFlite to DTC")
+dark_title_bar(root)
 
 #  path where the executable is running, all strats there. 
 path_run = os.path.dirname(sys.executable)
+#path_run = os.path.dirname(__file__)
 bs.path_run = path_run
-# path_run = os.path.dirname(__file__)
-
 root.iconbitmap(resource_path('Icon.ico'))
-
 
 root.configure(bg=col3)
 string_variable = StringVar(master=root, value="...xml file not selected...")
@@ -60,7 +68,7 @@ T.insert(END, "No flights yet...", "good2")
 T.configure(state='disabled',font=('Monospace', 12))
 
 #setting few default options to the base class (for now only FA18 is implemented)
-bs.plane="FA18" 
+bs.plane="F/A-18" 
 bs.string_variable = string_variable
 
 root.grid_rowconfigure(0, minsize=10)
@@ -85,15 +93,17 @@ root.grid_rowconfigure(2, minsize=33)
 # flights menu
 variable = StringVar(root)
 variable.set("No Flights") # default value
-flightsmenu = OptionMenu(root, variable, "No Flights")
-flightsmenu.config(width=9,height=1, bg=col2,activebackground=col4,font=('Monospace', 12))
+flightsmenu = OptionMenu(root, variable,"")
+flightsmenu.config(width=9,height=1, bg=col2,activebackground=col4,font=('Monospace', 12), fg="white", highlightthickness=0)
 flightsmenu.grid(row=4,column=1,rowspan=1, columnspan=3, sticky="nw")
+flightsmenu["menu"].config(bg=col4)
 
 def menucom(value ):
     variable.set(value)
     T.configure(state='normal')
     T.insert("1.0", "   .... Fligth "+value+" loaded .... \n\n",  "good")
     T.configure(state='disabled')        
+
     
 #main function that opens the xml file, read the data and updates menus, 
 #called with the button load    
@@ -130,10 +140,12 @@ root.grid_columnconfigure(12, minsize=15)
 
 #airplanes menu, not much related with that yet
 variable_plane = StringVar(root)
-variable_plane.set("FA18") # default value
-flightsmenu2 = OptionMenu(root, variable_plane, "FA18", "Not yet (F16C)", "Not yet (A10II)")
-flightsmenu2.config(width=9,height=1, bg=col2,font=('Monospace', 12),activebackground=col4)#activeforeground=col4,)
+variable_plane.set("F/A-18") # default value
+flightsmenu2 = OptionMenu(root, variable_plane, "F/A-18", "Not yet (F16C)", "Not yet (A10II)")
+flightsmenu2.config(width=9,height=1, bg=col2,font=('Monospace', 12),activebackground=col4, fg="white", highlightthickness=0)
+#activeforeground=col4,)
 flightsmenu2.grid(row=5,column=1,rowspan=1, columnspan=3, sticky="nw")
+flightsmenu2["menu"].config(bg=col4)
 
 #upload all the info in the plane
 def upload():
@@ -146,11 +158,13 @@ def upload():
         T.configure(state='disabled')        
 
 #upload button
-image = PhotoImage(file = resource_path("upload.png"))
-upload_button = Button(text="Upload!",font=('Monospace', 12),image=image,bg="black",activebackground=col5,
-                       command=upload, width=120,height=120)
 
-upload_button.grid(row=6,column=1,columnspan=2,sticky="nw")
+image = PhotoImage(file = resource_path("upload.png"))
+img_label= Label(image=image)
+upload_button = Button(text="Upload!",font=('Monospace', 12),image=image, borderwidth=0,
+                       command=upload, width=150,height=150, bg=col3,activebackground=col3)
+
+upload_button.grid(row=6,column=1,columnspan=2,sticky="ne")
 
 root.grid_rowconfigure(6, minsize=140)
 
@@ -165,27 +179,18 @@ bs.sprecise=bool(c_v2.get())
 
 def checkbox_com():
     bs.SaveFiles=bool(c_v1.get())   
-    if bs.update_status():
-        entry.configure(state='readonly', disabledforeground="darkblue")
-    else:
-        entry.configure(state='disabled', disabledforeground="darkred")     
     bs.update_status()
     
-
 checkbox = Checkbutton(root, text="Save DTC (json)", command=checkbox_com, variable=c_v1)
-checkbox.config(bg=col3,activebackground=col3,font=('Monospace', 12))
+checkbox.config(bg=col3,activebackground=col3,font=('Monospace', 12,"bold"))
 checkbox.grid(row=6,column=4,columnspan=2, rowspan=1, sticky="se")
 
 def checkbox2_com():
     bs.sprecise=bool(c_v2.get())
-    if bs.update_status():
-        entry.configure(state='readonly', disabledforeground="darkblue")
-    else:
-        entry.configure(state='disabled', disabledforeground="darkred")
     bs.update_status()
-
+        
 checkbox2 = Checkbutton(root, text="Precise Coord",command=checkbox2_com, variable=c_v2)
-checkbox2.config(bg=col3,activebackground=col3,font=('Monospace', 12))
+checkbox2.config(bg=col3,activebackground=col3,font=('Monospace', 12,"bold"))
 checkbox2.grid(row=6,column=6,columnspan=2, rowspan=1, sticky="se")
 
 
@@ -208,7 +213,7 @@ def show_wp():
     T.configure(state='disabled')        
   
 
-showwp_button = Button(text="Show Selected Flight",font=('Monospace', 11),bg=col4, fg=col1,
+showwp_button = Button(text="Show Selected Flight",font=('Monospace', 12),bg=col4, fg=col2,
                        activebackground=col4,command=show_wp, width=17,height=1)
 showwp_button.grid(row=6,column=8,columnspan=4,sticky="se")
 root.grid_rowconfigure(7, minsize=10)

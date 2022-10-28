@@ -28,7 +28,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='UI',
+    name='CFtoDTC',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

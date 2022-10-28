@@ -135,7 +135,7 @@ class base:
     # ************* makes the sequence of commands *************
     def create_clicks(self,flight_name):
         wplist=self.flights_dic[flight_name]
-        if self.plane == "FA18":
+        if self.plane == "F/A-18":
             return self.FA18_inst.BuildWPCommands(wplist)
 
     # ************* updates to DCS using the port 43001 *************
