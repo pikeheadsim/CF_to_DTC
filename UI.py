@@ -12,6 +12,7 @@ col2 = "#c6bcb6"
 col3 = "#96897f"
 col4 = "#625750"
 
+
 col2 = "#011f4b"
 col4 = "#03396c"
 col3 = "#005b96"
@@ -22,6 +23,7 @@ col1 = "#e0e2e4"
 col4 = "#d0e1f9"
 col3 = "#4d648d"
 col2 = "#283655"
+
 
 
 #pyinstaller stuff for the path
@@ -43,7 +45,9 @@ root.title("CombatFlite to DTC")
 path_run = os.path.dirname(sys.executable)
 bs.path_run = path_run
 # path_run = os.path.dirname(__file__)
-#root.iconbitmap(resource_path('Icon.ico'))
+
+root.iconbitmap(resource_path('Icon.ico'))
+
 
 root.configure(bg=col3)
 string_variable = StringVar(master=root, value="...xml file not selected...")
@@ -145,7 +149,9 @@ def upload():
 image = PhotoImage(file = resource_path("upload.png"))
 upload_button = Button(text="Upload!",font=('Monospace', 12),image=image,bg="black",activebackground=col5,
                        command=upload, width=120,height=120)
-upload_button.grid(row=6,column=1,columnspan=2,sticky="se")
+
+upload_button.grid(row=6,column=1,columnspan=2,sticky="nw")
+
 root.grid_rowconfigure(6, minsize=140)
 
 #Checkboxes to save DCS-DTC files and use precise coordinates
@@ -158,12 +164,14 @@ bs.SaveFiles=bool(c_v1.get())
 bs.sprecise=bool(c_v2.get())
 
 def checkbox_com():
-    bs.SaveFiles=bool(c_v1.get())
+    bs.SaveFiles=bool(c_v1.get())   
     if bs.update_status():
         entry.configure(state='readonly', disabledforeground="darkblue")
     else:
-        entry.configure(state='disabled', disabledforeground="darkred")
-        
+        entry.configure(state='disabled', disabledforeground="darkred")     
+    bs.update_status()
+    
+
 checkbox = Checkbutton(root, text="Save DTC (json)", command=checkbox_com, variable=c_v1)
 checkbox.config(bg=col3,activebackground=col3,font=('Monospace', 12))
 checkbox.grid(row=6,column=4,columnspan=2, rowspan=1, sticky="se")
@@ -174,12 +182,15 @@ def checkbox2_com():
         entry.configure(state='readonly', disabledforeground="darkblue")
     else:
         entry.configure(state='disabled', disabledforeground="darkred")
+    bs.update_status()
 
 checkbox2 = Checkbutton(root, text="Precise Coord",command=checkbox2_com, variable=c_v2)
 checkbox2.config(bg=col3,activebackground=col3,font=('Monospace', 12))
 checkbox2.grid(row=6,column=6,columnspan=2, rowspan=1, sticky="se")
 
+
 # Funcition and button to print the wayponts that are part of the selected flight
+
 def show_wp():
     T.configure(state='normal')
     T.insert("1.0","\n\n")
@@ -196,7 +207,8 @@ def show_wp():
     T.insert("1.0","# Flight Name:  -- "+variable.get()+"\n","good2")
     T.configure(state='disabled')        
   
-showwp_button = Button(text="Show Selected Flight",font=('Monospace', 11),bg=col2,
+
+showwp_button = Button(text="Show Selected Flight",font=('Monospace', 11),bg=col4, fg=col1,
                        activebackground=col4,command=show_wp, width=17,height=1)
 showwp_button.grid(row=6,column=8,columnspan=4,sticky="se")
 root.grid_rowconfigure(7, minsize=10)
