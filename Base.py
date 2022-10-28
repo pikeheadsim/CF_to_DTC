@@ -9,7 +9,7 @@ from tkinter import filedialog as fd
 import FA18
 
 
-#base class, the one talking to DCS and loading the planes
+#base class, the one talking to DCS and loading and saving files
 class base:
     
     #   *************  set default values for the class variables. *************
@@ -21,14 +21,12 @@ class base:
     base_filename=""  #filename without extension.
     number_flights=0  #total number of flights in the combatflite file. 
 
-
     T=""
     plane=""
     string_variable=""
     save_dtc_files=True
     
-    precise=True
-
+    precise=True    
     FA18_inst = FA18.FA18()
     
     @property
@@ -41,7 +39,6 @@ class base:
         self.FA18_inst.precise=self.precise
 
     SaveFiles=True
-
     def update_status(self, prst=False):
     # ************* Reset values and paths to start again ************* 
         if self.input_filename == "":
@@ -57,7 +54,7 @@ class base:
         self.base_filename=os.path.basename(self.input_filename).split('.', 1)[0]
         self.convert(prst)
 
-    
+     # ************* function to select the  input file ************* 
     def select_file(self):
         filetypes = (('CombatFlite (xml)', '*.xml'),('All files', '*.*'))
         old=self.input_filename
@@ -69,12 +66,8 @@ class base:
         self.input_file = ET.parse(self.input_filename)
         self.update_status(True)
         return True
-    
+    # ************* convert coords in degrees to deg, min, sec *************
     def from_decimal_dms(self,val, ck=True):
-        ''' This funcitions transforms the decimal 
-        value in degrees to (ex. N 34.54.3456) it can 
-        be used with precision or standard (ex.34.54.34) '''
-
         dec = abs(float(val))
         deg = int(dec)
         minutes = int((dec - deg)*60)
@@ -85,7 +78,7 @@ class base:
             sec = round((dec - deg - minutes/60.0)*3600)
             output = str(deg).zfill(2) + "." + str(minutes).zfill(2)+"."+str(sec).zfill(2)
         return output
-    
+    # ************* sets the wp in the DCS-DTC format *************
     def wp_to_DCTwp(self,w, idx, ck=True):
         '''Funciont that takes the info from the xml structure of the waypoint.'''
         flight_name = w.find("Name").text.split("\n")[0]
@@ -106,7 +99,8 @@ class base:
     def convert(self,prstatus=True):
         ''' Converts every flight in a dicctionary of waypoints that can be 
         send to a json files compatible with DCS-DTC or save it for later upload 
-        the info in the plane. T is the tkinter text box.'''
+        the info in the plane. T is the window text box used to give feedback to 
+        the user. '''
         
         #self.input_file = ET.parse(self.input_filename);
         flights = self.input_file.findall("Waypoints")
@@ -137,11 +131,13 @@ class base:
             self.T.insert("1.0",text)
             self.T.configure(state='disabled')
 
+    # ************* makes the sequence of commands *************
     def create_clicks(self,flight_name):
         wplist=self.flights_dic[flight_name]
         if self.plane == "FA18":
             return self.FA18_inst.BuildWPCommands(wplist)
 
+    # ************* updates to DCS using the port 43001 *************
     def upload_plane(self, selected_flight):
         ''' '''
         import socket
