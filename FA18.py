@@ -1,5 +1,4 @@
-﻿
-
+# ************* Class for the FA-18 more will be added *************
 class FA18:
     Dev={}
     Com={}
@@ -10,7 +9,7 @@ class FA18:
 
     precise=True
     
-    delay = 150 #Settings.CommandDelayMs;
+    delay = 150 
     delayMFDs = delay
     delayUFC = delay / 4
     delayUFCOpt = delay /2
@@ -116,18 +115,16 @@ class FA18:
     Com["BYPASS"]=(3001, "BYPASS", -1, 1)
 
 
-
+    # ************* Creates a single command (presing a key in the cockpit) ***********
     def GetCommand(self,D,C):
-        #ComID=0
-        #ComDL=2
-        #ComAC=3
+        #  ComID=0, ComDL=2, ComAC=3
         return "{'device': '" + str(self.Dev[D]) + "', 'code': '" + str(self.Com[C][0])     + "', 'delay': '" + str(int(self.Com[C][2])) + "', 'activate': '" + str(self.Com[C][3]) + "'},";
-
+    # ************* it makes sure we are at wp0 ***********
     def StartCommand(self):
         output = "{'start_condition': 'NOT_AT_WP_0'}," + self.GetCommand("RMFD","OSB-13") + "{'end_condition': 'NOT_AT_WP_0'},";
         output = output*100 
         return output
-    
+    # ************* builds the sequence of commands to press the cooerdinates ***********
     def buildDigits(self,coord):
         out=""
         co=coord.replace(" ","").replace(".","")
@@ -147,7 +144,7 @@ class FA18:
                 out += self.GetCommand("UFC",c)
             #print("*** ",c)
         return out
-
+ # ************* builds the sequence of commands to input the WPs ***********      
     def BuildWPCommands(self,WayPoints):
         ComLine=""
         ComLine += self.GetCommand("RMFD","OSB-18") # MENU
@@ -165,8 +162,7 @@ class FA18:
         ComLine += self.GetCommand("RMFD","OSB-05") # UFC
         ComLine += self.wait
         for w in WayPoints:
- #           ComLine += self.GetCommand("UFC","Opt1")
-            ComLine += self.GetCommand("UFC","Opt1")
+            ComLine += self.GetCommand("UFC","Opt1") # option for position
             ComLine += self.wait
             ComLine += self.buildDigits(w['Latitude'])
             ComLine += self.GetCommand("UFC","ENT")
@@ -174,19 +170,19 @@ class FA18:
             ComLine += self.buildDigits(w['Longitude'])
             ComLine += self.GetCommand("UFC","ENT")
             ComLine += self.waitlong
-            ComLine += self.GetCommand("UFC","Opt3")
+            ComLine += self.GetCommand("UFC","Opt3") # elevation in feet
             ComLine += self.GetCommand("UFC","Opt1")
             for c in str(w['Elevation']):
                 ComLine += self.GetCommand("UFC",c)
             ComLine += self.GetCommand("UFC","ENT")
             ComLine += self.wait
-            ComLine += self.GetCommand("RMFD","OSB-12") #next WP
+            ComLine += self.GetCommand("RMFD","OSB-12") # next WP
         for i in  range(len(WayPoints)):
-            ComLine += self.GetCommand("RMFD","OSB-13")
+            ComLine += self.GetCommand("RMFD","OSB-13") # go back to wp0
         ComLine += self.wait
         if self.precise:
-            ComLine += self.GetCommand("RMFD","OSB-19") # set precision coords
-        ComLine += self.GetCommand("RMFD","OSB-18")
+            ComLine += self.GetCommand("RMFD","OSB-19") # unset precision coords
+        ComLine += self.GetCommand("RMFD","OSB-18") # back to fcs
         ComLine += self.wait
         ComLine += self.GetCommand("RMFD","OSB-18")
         ComLine += self.GetCommand("RMFD","OSB-15")
