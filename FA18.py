@@ -145,7 +145,6 @@ class FA18:
                 if self.precise and len(co)-i == 4:
                     out += self.GetCommand("UFC","ENT")
                 out += self.GetCommand("UFC",c)
-            #print("*** ",c)
         return out
 
     def BuildWPCommands(self,WayPoints):

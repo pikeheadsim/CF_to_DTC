@@ -99,7 +99,7 @@ class base:
         else:
             long_dir="E "
     
-        return flight_name,{'Sequence': idx, 'Name': wp_name, 'Latitude': "N "+ self.from_decimal_dms(Lat,ck), 'Longitude': long_dir + self.from_decimal_dms(Lon,ck), 'Elevation': int(float(Ele)), 'Blank': False}
+        return flight_name,{'Sequence': idx, 'Name': wp_name, 'Latitude': "N "+ self.from_decimal_dms(Lat,ck), 'Longitude': long_dir + self.from_decimal_dms(Lon,ck), 'Elevation': round(float(Ele)*3.28084), 'Blank': False}
 
 
 
@@ -112,7 +112,7 @@ class base:
         flights = self.input_file.findall("Waypoints")
         string_flights=""
         heather = "\n***************  "+ self.base_filename[:19] + " ***************"
-        print(self.path_run)
+
         for flight in flights: #loop on flights
             wplist=[]
             wplist_file=[]
@@ -150,8 +150,6 @@ class base:
         commandtosend = self.create_clicks(selected_flight)
         commandtosend = commandtosend.replace("'","\"")
         commandtosend = "["+ commandtosend[:-1]+"]\n"
-        print(host)
-        #print(commandtosend2)
         s = socket.socket()#socket.AF_INET, socket.SOCK_STREAM)
         s.connect((host, port))
         s.sendall(str.encode(commandtosend,"ascii"))
