@@ -26,7 +26,7 @@ and add the next line to  ``...\Saved Games\DCS\Scripts\Export.lua``
 
 ## Limitations
 
- * For now only the FA-18 is implemented, next probably the F-16C and next, I guess A10II?
+ * For now only the FA-18 is implemented, next probably the F-16C and next, I guess A10CII?
 
 # De CombatFlit al Cartucho
 
@@ -56,4 +56,4 @@ y agregua la siguiente línea a ``...\Juegos guardados\DCS\Scripts\Export.lua``
 
 ## Limitaciones
 
-* Por ahora solo el FA-18 esta implementado, el próximo seguramente F-16C y el siguiente, igual A10II?
+* Por ahora solo el FA-18 esta implementado, el próximo seguramente F-16C y el siguiente, igual A10CII?
