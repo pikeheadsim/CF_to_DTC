@@ -2,7 +2,7 @@
 Simple program to upload waypoints in DCS from CombatFlite XML exported files. 
 CombatFlite is a widelly used tool to plan missions in DCS and this code is intended to provide direct data transfer cartridge capabilities from CombatFlite exported files.
 
-It's using the lua files from (dcs-dtc):  [https://github.com/the-paid-actor/dcs-dtc] based en [https://github.com/aronCiucu/DCSTheWay/tree/main/src]
+It's using the lua files from (dcs-dtc):  [https://github.com/the-paid-actor/dcs-dtc] based on [https://github.com/aronCiucu/DCSTheWay/tree/main/src]
 
 If you have dcs-dtc installed this should work out of the box, just run CF_to_DTC.exe. The prgram can also export the .json files 
 compatible with dct-dtc in case you want to use the extra features available there.  
