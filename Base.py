@@ -93,7 +93,7 @@ class base:
         else:
             long_dir="E "
     
-        return flight_name,{'Sequence': idx, 'Name': wp_name, 'Latitude': "N "+ self.from_decimal_dms(Lat,ck), 'Longitude': long_dir + self.from_decimal_dms(Lon,ck), 'Elevation': int(float(Ele)), 'Blank': False}
+        return flight_name,{'Sequence': idx, 'Name': wp_name, 'Latitude': "N "+ self.from_decimal_dms(Lat,ck), 'Longitude': long_dir + self.from_decimal_dms(Lon,ck), 'Elevation': int(float(Ele)*3.28084), 'Blank': False}
 
 
 
