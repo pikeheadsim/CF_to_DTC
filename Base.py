@@ -71,13 +71,14 @@ class base:
     def from_decimal_dms(self,val, ck=True):
         dec = abs(float(val))
         deg = int(dec)
-        minutes = int((dec - deg)*60)
+        minrest = (dec - deg)*60
+        minutes = int(minrest)
         if self.precise and ck:
-            sec = round((dec - deg - minutes/60.0)*360000)
-            output = str(deg).zfill(2) + "." + str(minutes).zfill(2)+"."+str(sec).zfill(4)
+            decmin = round((minrest - minutes)*10000)
+            output = str(deg).zfill(2) + "." + str(minutes).zfill(2)+"."+str(decmin).zfill(4)
         else:
-            sec = round((dec - deg - minutes/60.0)*3600)
-            output = str(deg).zfill(2) + "." + str(minutes).zfill(2)+"."+str(sec).zfill(2)
+            decmin = round((minrest - minutes)*100)
+            output = str(deg).zfill(2) + "." + str(minutes).zfill(2)+"."+str(decmin).zfill(2)
         return output
     # ************* sets the wp in the DCS-DTC format *************
     def wp_to_DCTwp(self,w, idx, ck=True):
