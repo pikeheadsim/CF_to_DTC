@@ -75,9 +75,21 @@ class base:
         minutes = int(minrest)
         if self.precise and ck:
             decmin = round((minrest - minutes)*10000)
+            if decmin == 10000:
+                minutes += 1
+                decmin = 0
+                if minutes == 60:
+                    deg += 1
+                    minutes=0
             output = str(deg).zfill(2) + "." + str(minutes).zfill(2)+"."+str(decmin).zfill(4)
         else:
             decmin = round((minrest - minutes)*100)
+            if decmin == 100:
+                minutes += 1
+                decmin = 0
+                if minutes == 60:
+                    deg += 1
+                    minutes=0
             output = str(deg).zfill(2) + "." + str(minutes).zfill(2)+"."+str(decmin).zfill(2)
         return output
     # ************* sets the wp in the DCS-DTC format *************
